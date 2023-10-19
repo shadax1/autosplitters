@@ -41,7 +41,7 @@ init
 
 start
 {
-    if(current.igt_sec != 0)
+    if(current.igt_sec != 0 && old.igt_sec == 0)
     {
 		vars.triggeredSplits = new bool[17];
 		return true;
@@ -50,7 +50,7 @@ start
 
 reset
 {
-	if(current.igt_sec == 0)
+	if(current.igt_sec == 0 && old.igt_sec != 0)
 	{
 		vars.triggeredSplits = new bool[17];
 		return true;
