@@ -1,13 +1,13 @@
 state("rks_fs", "og")
 {
-    uint igt_sec: "rks_fs.exe", 0x0750BB0;
+    uint igt: "rks_fs.exe", 0x0750BB0;
     uint stage: "rks_fs.exe", 0x03AD924;
     uint fanfare: "rks_fs.exe", 0x072748C; //around 20 just before touching the ground then goes to 401 and up
 }
 
 state("rksf", "steam")
 {
-	uint igt_sec: "rksf.exe", 0x0CE4450;
+	uint igt: "rksf.exe", 0x0CE4450;
     uint stage: "rksf.exe", 0x076B940;
     uint fanfare: "rksf.exe", 0x0CBAD04;
 }
@@ -26,7 +26,7 @@ init
 
 start
 {
-    if(current.igt_sec != 0 && old.igt_sec == 0)
+    if(current.igt != 0 && old.igt == 0)
     {
 		vars.triggeredSplits = new bool[17];
 		return true;
@@ -35,7 +35,7 @@ start
 
 reset
 {
-	if(current.igt_sec == 0 && old.igt_sec != 0)
+	if(current.igt == 0 && old.igt != 0)
 	{
 		vars.triggeredSplits = new bool[17];
 		return true;
@@ -89,4 +89,15 @@ split
 	if(settings["SplitBossRush"] && !vars.triggeredSplits[14] && current.fanfare > 410 && current.fanfare < 500 && current.stage == 16) { return vars.triggeredSplits[14] = true; }
 	if(settings["SplitIris"] && !vars.triggeredSplits[15] && old.stage == 17 && current.stage == 18) { return vars.triggeredSplits[15] = true; }
 	return false;
+}
+
+gameTime
+{
+	if(current.igt != old.igt)
+		return TimeSpan.FromMilliseconds(current.igt*16.66666666666667);
+}
+
+isLoading
+{
+	return true;
 }

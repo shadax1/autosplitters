@@ -1,27 +1,27 @@
 state("rks", "og1.05c")
 {
-    uint igt_sec: "rks.exe", 0x04130A4;
+    uint igt: "rks.exe", 0x04130A4;
     uint fanfare: "rks.exe", 0x03A03C4; //around 20 just before touching the ground then goes to 401 and up
     uint stage: "rks.exe", 0x021D498; //1 = prologue, 2 = freudia, ... , 10 = sep 1, 14 = iris 1, 17 = final stage
 }
 
 state("rks_e", "og_en1.05c")
 {
-    uint igt_sec: "rks_e.exe", 0x04130A4;
+    uint igt: "rks_e.exe", 0x04130A4;
     uint fanfare: "rks_e.exe", 0x03A03C4;
     uint stage: "rks_e.exe", 0x021D498;
 }
 
 state("rks", "og1.06a")
 {
-    uint igt_sec: "rks.exe", 0x040E7EC;
+    uint igt: "rks.exe", 0x040E7EC;
     uint fanfare: "rks.exe", 0x039BB04;
     uint stage: "rks.exe", 0x0218498;
 }
 
 state("rks", "steam")
 {
-    uint igt_sec: "rks.exe", 0x0802D2C;
+    uint igt: "rks.exe", 0x0802D2C;
     uint fanfare: "rks.exe", 0x078E7D8;
     uint stage: "rks.exe", 0x03AF344;
 }
@@ -41,7 +41,7 @@ init
 
 start
 {
-    if(current.igt_sec != 0 && old.igt_sec == 0)
+    if(current.igt != 0 && old.igt == 0)
     {
 		vars.triggeredSplits = new bool[17];
 		return true;
@@ -50,7 +50,7 @@ start
 
 reset
 {
-	if(current.igt_sec == 0 && old.igt_sec != 0)
+	if(current.igt == 0 && old.igt != 0)
 	{
 		vars.triggeredSplits = new bool[17];
 		return true;
@@ -104,4 +104,15 @@ split
 	if(settings["SplitBossRush"] && !vars.triggeredSplits[14] && current.fanfare > 410 && current.fanfare < 500 && current.stage == 16) { return vars.triggeredSplits[14] = true; }
 	if(settings["SplitIris"] && !vars.triggeredSplits[15] && old.stage == 17 && current.stage == 18) { return vars.triggeredSplits[15] = true; }
 	return false;
+}
+
+gameTime
+{
+	if(current.igt != old.igt)
+		return TimeSpan.FromMilliseconds(current.igt*16.66666666666667);
+}
+
+isLoading
+{
+	return true;
 }
